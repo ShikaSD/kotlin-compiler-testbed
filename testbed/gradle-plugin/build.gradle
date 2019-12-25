@@ -42,5 +42,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-gradle-plugin-api"
 
-    embedded project(':object-java-serialization:kotlin-plugin')
+    embedded project(':testbed:kotlin-plugin')
 }

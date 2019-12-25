@@ -8,8 +8,8 @@ import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import java.io.File
 
 //@AutoService(CommandLineProcessor::class)
-class ObjectSerializationCommandLineProcessor : CommandLineProcessor {
-    override val pluginId: String = "object-serialization-fix"
+class TestBedCommandLineProcessor : CommandLineProcessor {
+    override val pluginId: String = "testbed"
     override val pluginOptions: Collection<AbstractCliOption> =
         listOf(
             CliOption(
@@ -27,6 +27,6 @@ class ObjectSerializationCommandLineProcessor : CommandLineProcessor {
     }
 
     companion object {
-        val KEY_ENABLED = CompilerConfigurationKey<Boolean>("di.plugin.enabled")
+        val KEY_ENABLED = CompilerConfigurationKey<Boolean>("testbed.enabled")
     }
 }

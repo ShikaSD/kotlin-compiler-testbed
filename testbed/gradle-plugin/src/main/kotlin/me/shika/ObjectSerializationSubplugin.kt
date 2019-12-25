@@ -28,7 +28,7 @@ class ObjectSerializationSubplugin: KotlinGradleSubplugin<AbstractCompile> {
         )
     }
 
-    override fun getCompilerPluginId(): String = "object-serialization-fix"
+    override fun getCompilerPluginId(): String = "testbed"
 
     override fun getPluginArtifact(): SubpluginArtifact =
         SubpluginArtifact(
