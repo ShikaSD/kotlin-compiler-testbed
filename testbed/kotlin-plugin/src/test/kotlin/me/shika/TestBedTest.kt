@@ -4,15 +4,8 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import com.tschuchort.compiletesting.SourceFile
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
-import org.junit.runners.Parameterized.Parameters
 import java.io.File
-import java.io.Serializable
-import java.lang.reflect.Method
 
 class TestBedTest {
     val compilation = KotlinCompilation().apply {
@@ -22,10 +15,12 @@ class TestBedTest {
 
     @Test
     fun `compiles source`() {
-        compilation.sources = listOf(SourceFile.fromPath("Source.kt".resourceFile()))
+        compilation.sources = listOf("prelude.kt", "interface.kt").map { it.resourceFile() }
         val result = compilation.compile()
         assertEquals(result.exitCode, OK)
     }
 
-    private fun String.resourceFile() = File(this@TestBedTest.javaClass.classLoader.getResource(this).file)
+    private fun String.resourceFile() = SourceFile.fromPath(
+        File(this@TestBedTest.javaClass.classLoader.getResource(this).file)
+    )
 }

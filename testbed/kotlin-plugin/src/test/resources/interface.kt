@@ -5,16 +5,20 @@ class Test {
 
 interface SomeInterface {
     fun someMethod(): Int
+    fun someMethodWithParameter(string: String): Int
 }
 
-annotation class Mock
-
-//// output
+/** output */
 // class Test {
+//
 //    @Mock
 //    lateinit var mock1: SomeInterface
 //
-//   class mock1_Mock : SomeInterface {
+//    init {
+//        mock1 = mock1_Mock()
+//    }
+//
+//    class mock1_Mock : SomeInterface {
 //        override fun someMethod(): Int {
 //            return null as Int
 //        }
