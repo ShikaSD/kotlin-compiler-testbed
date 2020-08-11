@@ -1,0 +1,23 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+}
+
+dependencies {
+    kotlinCompilerPluginClasspath project(":testbed:kotlin-plugin")
+}
+
+kotlin {
+    js(IR) {
+        browser()
+    }
+
+    sourceSets {
+        jsMain.dependencies {
+
+        }
+
+        jsTest.dependencies {
+            implementation kotlin("test-js")
+        }
+    }
+}

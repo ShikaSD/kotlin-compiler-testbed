@@ -1,3 +1,4 @@
-rootProject.name = 'komplex'
+rootProject.name = 'testbed'
 include 'testbed:kotlin-plugin'
 include 'testbed:gradle-plugin'
+include 'integration'
