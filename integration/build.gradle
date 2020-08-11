@@ -10,14 +10,15 @@ kotlin {
     js(IR) {
         browser()
     }
+    jvm()
 
     sourceSets {
-        jsMain.dependencies {
-
-        }
-
         jsTest.dependencies {
             implementation kotlin("test-js")
+        }
+
+        jvmTest.dependencies {
+            implementation 'junit:junit:4.12'
         }
     }
 }
