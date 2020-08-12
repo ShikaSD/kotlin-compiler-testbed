@@ -14,17 +14,20 @@ import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrConstKind
 import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrConstImpl
-import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
+import org.jetbrains.kotlin.ir.util.copyTypeAndValueArgumentsFrom
 import org.jetbrains.kotlin.ir.util.patchDeclarationParents
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 import org.jetbrains.kotlin.name.Name
 
 class ParamIrGeneration : IrGenerationExtension {
+    private val functionMapping = mutableMapOf<IrFunction, IrFunction>()
+
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
-        moduleFragment.transformChildrenVoid(AddIntParameter(pluginContext))
-        moduleFragment.transformChildrenVoid(ReplaceCalls(pluginContext))
+        moduleFragment.transformChildrenVoid(AddIntParameter(pluginContext, functionMapping))
+        moduleFragment.transformChildrenVoid(ReplaceCalls(pluginContext, functionMapping))
         moduleFragment.patchDeclarationParents()
     }
 }
@@ -32,11 +35,16 @@ class ParamIrGeneration : IrGenerationExtension {
 /**
  * Adds one Int param to function containing "addParam"
  */
-class AddIntParameter(private val pluginContext: IrPluginContext) : IrElementTransformerVoid() {
+class AddIntParameter(
+    private val pluginContext: IrPluginContext,
+    private val functionMapping: MutableMap<IrFunction, IrFunction>
+) : IrElementTransformerVoid() {
     override fun visitSimpleFunction(declaration: IrSimpleFunction): IrStatement =
         super.visitSimpleFunction(declaration).let {
             if (it is IrSimpleFunction && it.shouldAddParam) {
-                replaceFunction(declaration)
+                replaceFunction(declaration).also {
+                    functionMapping[declaration] = it
+                }
             } else {
                 it
             }
@@ -63,7 +71,10 @@ class AddIntParameter(private val pluginContext: IrPluginContext) : IrElementTra
         }
 }
 
-class ReplaceCalls(private val pluginContext: IrPluginContext): IrElementTransformerVoid() {
+class ReplaceCalls(
+    private val pluginContext: IrPluginContext,
+    private val functionMapping: MutableMap<IrFunction, IrFunction>
+): IrElementTransformerVoid() {
     override fun visitCall(expression: IrCall): IrExpression =
         super.visitCall(expression).let {
             if (it is IrCall && it.symbol.owner.shouldAddParam) {
@@ -74,20 +85,24 @@ class ReplaceCalls(private val pluginContext: IrPluginContext): IrElementTransfo
         }
 
     private fun transformCall(call: IrCall): IrCall =
-        call
-            .deepCopyWithSymbols()
-            .also {
-                it.putValueArgument(
-                    it.valueArgumentsCount,
-                    IrConstImpl(
-                        startOffset = 0,
-                        endOffset = 0,
-                        type = pluginContext.irBuiltIns.intType,
-                        kind = IrConstKind.Int,
-                        value = 0
-                    )
+        IrCallImpl(
+            startOffset = call.startOffset,
+            endOffset = call.endOffset,
+            type = call.type,
+            symbol = functionMapping[call.symbol.owner]?.symbol ?: call.symbol,
+        ).also {
+            it.copyTypeAndValueArgumentsFrom(call)
+            it.putValueArgument(
+                it.valueArgumentsCount,
+                IrConstImpl(
+                    startOffset = call.startOffset,
+                    endOffset = call.endOffset,
+                    type = pluginContext.irBuiltIns.intType,
+                    kind = IrConstKind.Int,
+                    value = 0
                 )
-            }
+            )
+        }
 }
 
 private val IrFunction.shouldAddParam: Boolean get() =
