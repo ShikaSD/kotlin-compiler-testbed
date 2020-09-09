@@ -1,3 +1,5 @@
-fun addParamHere() {
+package foo
+
+fun addParamHere(s: String) {
 
 }
