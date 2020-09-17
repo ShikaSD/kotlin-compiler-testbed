@@ -1,3 +1,11 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        mavenLocal()
+    }
+
+}
 rootProject.name = 'testbed'
 include 'testbed:kotlin-plugin'
 include 'testbed:gradle-plugin'
