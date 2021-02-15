@@ -1,8 +1,9 @@
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
-class TestAddingParam {
+class JsTest {
     @Test
-    fun addParamWorks() {
-        addParamHere()
+    fun test() {
+        assertEquals("", TestObject.target)
     }
 }

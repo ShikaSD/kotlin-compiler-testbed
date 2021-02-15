@@ -1,3 +1,3 @@
-fun addParamHere() {
-
+object TestObject {
+    val target: String = ""
 }
