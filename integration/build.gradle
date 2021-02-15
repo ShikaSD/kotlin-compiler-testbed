@@ -10,7 +10,13 @@ kotlin {
     js(IR) {
         browser()
     }
-    jvm()
+    jvm() {
+        compilations.all {
+            kotlinOptions {
+                useIR = true
+            }
+        }
+    }
 
     sourceSets {
         jsTest.dependencies {

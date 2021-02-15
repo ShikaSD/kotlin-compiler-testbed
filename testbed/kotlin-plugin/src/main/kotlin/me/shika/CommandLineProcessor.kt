@@ -1,5 +1,6 @@
 package me.shika
 
+import org.jetbrains.kotlin.cli.common.toBooleanLenient
 import org.jetbrains.kotlin.compiler.plugin.AbstractCliOption
 import org.jetbrains.kotlin.compiler.plugin.CliOption
 import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
@@ -21,9 +22,6 @@ class TestBedCommandLineProcessor : CommandLineProcessor {
         )
 
     override fun processOption(option: AbstractCliOption, value: String, configuration: CompilerConfiguration) {
-        when (option.optionName) {
-            "enabled" -> configuration.put(KEY_ENABLED, value.toBoolean())
-        }
     }
 
     companion object {

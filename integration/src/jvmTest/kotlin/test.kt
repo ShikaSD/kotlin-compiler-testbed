@@ -1,8 +1,9 @@
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class TestAddingParam {
+class JunitTest {
     @Test
-    fun addParamWorks() {
-        addParamHere()
+    fun test() {
+        assertEquals("Updated through IR", TestObject.target())
     }
 }
